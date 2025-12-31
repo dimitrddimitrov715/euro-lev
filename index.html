@@ -22,7 +22,9 @@ button { background:#0057b7; color:#fff; border:none; }
   <option value="eur">EUR → BGN</option>
   <option value="bgn">BGN → EUR</option>
 </select>
-<input id="paid" type="number" placeholder="Платено (по избор)">
+
+<input id="paid_bgn" type="number" placeholder="Платено в лева (по избор)">
+<input id="paid_eur" type="number" placeholder="Платено в евро (по избор)">
 <button onclick="calc()">Изчисли</button>
 <div id="result"></div>
 </div>
@@ -31,11 +33,36 @@ button { background:#0057b7; color:#fff; border:none; }
 const RATE = 1.95583;
 function calc(){
   const a = Number(amount.value);
-  const p = Number(paid.value);
+  const modeVal = mode.value;
+  const paidBGN = Number(paid_bgn.value);
+  const paidEUR = Number(paid_eur.value);
+
   if(!a){ result.innerText="Въведи сума"; return; }
-  let c = mode.value==="eur" ? a*RATE : a/RATE;
-  let t = "Сума: " + c.toFixed(2);
-  if(p) t += p>=c ? " | Ресто: "+(p-c).toFixed(2) : " | Недостатъчно платено";
+
+  // Изчисляваме сумата в BGN и EUR
+  let sumBGN, sumEUR;
+  if(modeVal==="eur"){
+    sumEUR = a;
+    sumBGN = a * RATE;
+  } else {
+    sumBGN = a;
+    sumEUR = a / RATE;
+  }
+
+  let t = `Сума: ${sumBGN.toFixed(2)} BGN / ${sumEUR.toFixed(2)} EUR`;
+
+  // Изчисляваме ресто
+  let totalPaidBGN = paidBGN + paidEUR * RATE;
+  if(totalPaidBGN){
+    if(totalPaidBGN >= sumBGN){
+      let changeBGN = totalPaidBGN - sumBGN;
+      let changeEUR = changeBGN / RATE;
+      t += ` | Ресто: ${changeBGN.toFixed(2)} BGN / ${changeEUR.toFixed(2)} EUR`;
+    } else {
+      t += " | Недостатъчно платено";
+    }
+  }
+
   result.innerText = t;
 }
 </script>
