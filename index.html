@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Евро ↔ Лев</title>
+<style>
+body { font-family: Arial; background:#f5f5f5; padding:20px; }
+.box { background:#fff; padding:15px; max-width:320px; border:1px solid #ccc; }
+input, select, button {
+  width:100%; padding:10px; margin-top:10px; font-size:16px;
+}
+button { background:#0057b7; color:#fff; border:none; }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Евро ↔ Лев</h2>
+
+<input id="amount" type="number" placeholder="Сума">
+<select id="mode">
+  <option value="eur">EUR → BGN</option>
+  <option value="bgn">BGN → EUR</option>
+</select>
+<input id="paid" type="number" placeholder="Платено (по избор)">
+<button onclick="calc()">Изчисли</button>
+<div id="result"></div>
+</div>
+
+<script>
+const RATE = 1.95583;
+function calc(){
+  const a = Number(amount.value);
+  const p = Number(paid.value);
+  if(!a){ result.innerText="Въведи сума"; return; }
+  let c = mode.value==="eur" ? a*RATE : a/RATE;
+  let t = "Сума: " + c.toFixed(2);
+  if(p) t += p>=c ? " | Ресто: "+(p-c).toFixed(2) : " | Недостатъчно платено";
+  result.innerText = t;
+}
+</script>
+
+</body>
+</html>
